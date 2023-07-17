@@ -16,13 +16,14 @@ app.post("/list-features", async (req, res) => {
             return { Q: item.Q, A: item.A };
         })
     );
-    const prompt = `given  the following array of features  delimited by <txt></txt> , and the following questionnaire in the following format [{"Q": "question", "A", "user's answer}], return a list of features names from our the list provided only based on the answers provided\n
+    const prompt = `given  the following array of features  delimited by <txt></txt> , and the following questionnaire in the following format [{"Q": "question", "A", "user's answer}] delimited by <p></p>, return a list of features names from our the list provided only based on the answers provided\n
         <txt>${features}</txt>\n
+        <p>
         [
         ${req.body.questionnaire.map((item) => {
             return `{Q: ${item.Q}, A: ${item.A}}`;
         })}
-        ] \n
+        ] </p>\n
         if there is any unrelated answer skip it and if feature needed is not included in the provided features list ignore it and if there is no features mapped at all return "THERE IS NO FEATURES FOUND"
       `;
     console.log("prompt", prompt);
