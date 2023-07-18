@@ -49,16 +49,17 @@ app.post("/chat", async (req, res) => {
     let context = [
         {
             role: "user",
-            content: `you are a friendly chatbot, an automated service that asks the user one question per time and waits the user to answer this question to be able to ask him the next one, validate user's answer against the question topic if its not related ask the user to re answer before asking the next question,\
-            these are the questions delimited by <txt></txt> each question is followed by the validation for each answer to be able to view the  next question, ask only one question per time:  \
+            content: `you are a friendly chatbot, that asks the user one question per time and waits the user to answer each question to be able to ask him the next one, validate user's answer against the question topic if its not related ask the user to re answer before asking the next question,\
+            these are the questions delimited by <txt></txt> each question is followed by the validation for each answer to be able to view the  next question without printing the validation message, ask only one question per time:  \
            <txt> 1- What are you building?\ 
-                user can only choose from the following [WEBSITE, SERVICE, MOBILEAPP]\
-            2- What is the purpose/goal of what you’re building? What are you looking to solve?\
-                user's answer should only be related to the purpose/goal of the type he choose from the previous questions
-            3- Any key features or project requirements that you would like to share?\
-                user should only enter key feature and requirements related to his project </txt>
-            then after getting user's answers, from these answers return only the features found in this feature list that maps to the user needs: \
-            features: ${features}`,
+            user can only choose from the following [WEBSITE, SERVICE, MOBILEAPP] \
+            2- What is the purpose/goal of what you’re building? What are you looking to solve? \
+            user's answer should only be related to the purpose/goal of the type he choose from the previous questions
+            3- Any key features or project requirements that you would like to share? \
+            user should only enter key feature and requirements related to his project </txt>
+            then after getting user's answers, from these answers return only the features names found in this feature list that maps to the user needs: \
+            features: ${features}
+            first thing now you should start with the first question`,
         },
     ];
     await openai
@@ -74,13 +75,11 @@ app.post("/chat", async (req, res) => {
             });
         });
     userInterface.on("line", async (input) => {
-        console.log("input", input);
         if (input.length != 0)
             context.push({
                 role: "user",
                 content: input,
             });
-        console.log(context);
         await openai
             .createChatCompletion({
                 model: "gpt-3.5-turbo",
