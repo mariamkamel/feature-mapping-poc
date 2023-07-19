@@ -10,6 +10,10 @@ const features = require("./features");
 const app = express();
 app.use(bodyParser.json());
 const readline = require("readline");
+let http = require("http");
+let fs = require("fs");
+const cors = require("cors");
+app.use(cors());
 
 app.post("/list-features", async (req, res) => {
     console.log(
@@ -116,4 +120,32 @@ app.post("/validate_questions", async (req, res) => {
         });
 });
 
+app.post("/send_request", async (req, res) => {
+    console.log("entered");
+    console.log("Req", req.body);
+    const features = require("./features");
+    const response = await openai
+        .createChatCompletion(req.body)
+        .then((result) => {
+            // Sending the response data back to the client
+            res.send(result.data.choices[0]);
+        });
+});
+
+// let handleRequest = (request, response) => {
+//     response.writeHead(200, {
+//         "Content-Type": "text/html",
+//     });
+//     fs.readFile("./index.html", null, function (error, data) {
+//         if (error) {
+//             response.writeHead(404);
+//             respone.write("Whoops! File not found!");
+//         } else {
+//             response.write(data);
+//         }
+//         response.end();
+//     });
+// };
 app.listen(3000, () => console.log("Example app is listening on port 3000."));
+
+// http.createServer(handleRequest).listen(8000);
